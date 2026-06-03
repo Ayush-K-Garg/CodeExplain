@@ -3,14 +3,10 @@ import React from 'react';
 export default function DashboardView({ overviewText, repoId, onStartChat }) {
   
   /**
-   * High-fidelity layout engine that isolates structural report sections
-   * and preserves raw code blocks / ASCII flowcharts perfectly.
-   */
-/**
    * High-fidelity layout engine that isolates structural report sections,
    * completely cleans standalone padding lines, and preserves ASCII charts.
    */
-const processReportSections = (rawText) => {
+  const processReportSections = (rawText) => {
     if (!rawText) return [];
 
     // Step 1: Pre-process lines to completely eliminate standalone markdown formatting markers
@@ -27,8 +23,10 @@ const processReportSections = (rawText) => {
     // Re-unify clean lines back into a block string
     const cleanText = filteredLines.join('\n').trim();
     
-    // Step 2: Split text into arrays based on numbered sections (e.g., 1. CODEBASE SUMMARY)
-    const rawBlocks = cleanText.split(/(?=\d\.\s[A-Z\s]+)/g);
+    // Step 2: Split text STRICTLY on the four main numbered section headers.
+    // Uses multiline (m) and case-insensitive (i) lookahead to ensure we only split at the start of lines
+    // matching your exact architecture report panels. This prevents sub-steps inside diagrams from breaking cards!
+    const rawBlocks = cleanText.split(/(?=^[1-4]\.\s*(?:CODEBASE\s+SUMMARY|ARCHITECTURAL\s+LAYOUT|CORE\s+DATA\s+FLOW|RECOMMENDED\s+STARTING\s+POINTS))/gmi);
 
     return rawBlocks.map(block => {
       const lines = block.split('\n');
@@ -103,6 +101,7 @@ const processReportSections = (rawText) => {
       };
     }).filter(section => section.title && section.contentNodes.length > 0);
   };
+  
   const processedSections = processReportSections(overviewText);
 
   return (
