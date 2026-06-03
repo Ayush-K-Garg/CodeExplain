@@ -13,8 +13,6 @@ dist-ssr
 *.local
 
 .env
-.env.deployment
-
 .env.*
 
 # Editor directories and files
